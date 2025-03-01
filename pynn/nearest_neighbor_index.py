@@ -59,8 +59,7 @@ class NearestNeighborIndex:
 
     def find_nearest(self, query_point):
         """
-        TODO comment me.
+        find_nearest finds the nearest point to query_point using the find_nearest_fast algorithm
         """
 
-        # TODO implement me so this class runs much faster.
         return self.find_nearest_fast(query_point)
