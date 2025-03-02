@@ -36,7 +36,7 @@ class NearestNeighborIndex:
 
         return min_point
 
-    def find_nearest_fast(self, query_point):
+    def find_nearest_fast(self, query_point, abs=abs):
         """
         TODO: Re-implement me with your faster solution.
 
@@ -46,28 +46,29 @@ class NearestNeighborIndex:
 
         if (self.points):
             # reduce array indexing by setting query's x and y
-            x, y = query_point
+            query_x, query_y = query_point
 
             # assume first point is closest to avoid checking min_dist's truthiness
             min_point = self.points[0]
-            min_deltax = abs(self.points[0][0] - x)
-            min_deltay = abs(self.points[0][1] - y)
-            min_dist = math.sqrt(min_deltax * min_deltax + min_deltay * min_deltay)
+            min_deltax = abs(self.points[0][0] - query_x)
+            min_deltay = abs(self.points[0][1] - query_y)
+            # square root function is continuous and increasing, unnecessary for comparisons
+            min_dist_squared = min_deltax * min_deltax + min_deltay * min_deltay
 
-            for point in self.points:
-                deltax = point[0] - x
-                deltay = point[1] - y
+            for next_x, next_y in self.points:
+                deltax = abs(next_x - query_x)
+                deltay = abs(next_y - query_y)
 
                 # if both deltas are larger, distance must be greater
-                if abs(deltax) > min_deltax and abs(deltay) > min_deltay:
+                if deltax > min_deltax and deltay > min_deltay:
                     continue
 
-                dist = math.sqrt(deltax * deltax + deltay * deltay)
-                if dist < min_dist:
-                    min_dist = dist
-                    min_point = point
-                    min_deltax = abs(deltax)
-                    min_deltay = abs(deltay)
+                dist_squared = deltax * deltax + deltay * deltay
+                if dist_squared < min_dist_squared:
+                    min_dist_squared = dist_squared
+                    min_point = (next_x, next_y)
+                    min_deltax = deltax
+                    min_deltay = deltay
 
             return min_point
 
