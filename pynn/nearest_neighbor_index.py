@@ -59,16 +59,26 @@ class NearestNeighborIndex:
                 deltax = abs(next_x - query_x)
                 deltay = abs(next_y - query_y)
 
-                # if both deltas are larger, distance must be greater
-                if deltax > min_deltax and deltay > min_deltay:
-                    continue
-
-                dist_squared = deltax * deltax + deltay * deltay
-                if dist_squared < min_dist_squared:
-                    min_dist_squared = dist_squared
-                    min_point = (next_x, next_y)
-                    min_deltax = deltax
-                    min_deltay = deltay
+                if deltax < min_deltax:
+                    new_dist_squared = deltay * deltay
+                    # if the y distance is not larger than the prev distance, check with the x
+                    if new_dist_squared < min_dist_squared:
+                        new_dist_squared += deltax * deltax
+                        if new_dist_squared < min_dist_squared:
+                            min_dist_squared = new_dist_squared
+                            min_point = (next_x, next_y)
+                            min_deltax = deltax
+                            min_deltay = deltay
+                elif deltay < min_deltay:
+                    new_dist_squared = deltax * deltax
+                    # if the x distance is not larger than the prev distance, check with the y
+                    if new_dist_squared < min_dist_squared:
+                        new_dist_squared += deltay * deltay
+                        if new_dist_squared < min_dist_squared:
+                            min_dist_squared = new_dist_squared
+                            min_point = (next_x, next_y)
+                            min_deltax = deltax
+                            min_deltay = deltay
 
             return min_point
 
