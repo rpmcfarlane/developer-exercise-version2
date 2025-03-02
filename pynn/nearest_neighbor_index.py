@@ -44,18 +44,34 @@ class NearestNeighborIndex:
         points, None is returned.
         """
 
-        min_dist = None
-        min_point = None
+        if (self.points):
+            # reduce array indexing by setting query's x and y
+            x, y = query_point
 
-        for point in self.points:
-            deltax = point[0] - query_point[0]
-            deltay = point[1] - query_point[1]
-            dist = math.sqrt(deltax * deltax + deltay * deltay)
-            if min_dist is None or dist < min_dist:
-                min_dist = dist
-                min_point = point
+            # assume first point is closest to avoid checking min_dist's truthiness
+            min_point = self.points[0]
+            min_deltax = abs(self.points[0][0] - x)
+            min_deltay = abs(self.points[0][1] - y)
+            min_dist = math.sqrt(min_deltax * min_deltax + min_deltay * min_deltay)
 
-        return min_point
+            for point in self.points:
+                deltax = point[0] - x
+                deltay = point[1] - y
+
+                # if both deltas are larger, distance must be greater
+                if abs(deltax) > min_deltax and abs(deltay) > min_deltay:
+                    continue
+
+                dist = math.sqrt(deltax * deltax + deltay * deltay)
+                if dist < min_dist:
+                    min_dist = dist
+                    min_point = point
+                    min_deltax = abs(deltax)
+                    min_deltay = abs(deltay)
+
+            return min_point
+
+        return None
 
     def find_nearest(self, query_point):
         """
