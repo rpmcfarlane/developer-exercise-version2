@@ -113,3 +113,46 @@ class NearestNeighborIndexTest(unittest.TestCase):
         single_point = (random.uniform(-1000, 1000), random.uniform(-1000, 1000))
         uut = NearestNeighborIndex([single_point])
         assert uut.find_nearest(query_point) == single_point
+
+    def test_closest_is_first(self):
+        test_points = [
+            (-1000, 20),
+            (1, 2),
+            (1, 0),
+            (10, 5),
+            (3.14159, 42),
+            (42, 3.14159),
+        ]
+
+        uut = NearestNeighborIndex(test_points)
+
+        self.assertEqual((-1000, 20), uut.find_nearest((-1000, 0)))
+
+    def test_closest_is_last(self):
+        test_points = [
+            (-1000, 20),
+            (1, 2),
+            (1, 0),
+            (10, 5),
+            (3.14159, 42),
+            (42, 3.14159),
+        ]
+
+        uut = NearestNeighborIndex(test_points)
+
+        self.assertEqual((42, 3.14159), uut.find_nearest((42, 0)))
+    
+    def test_multiple_closest_xs(self):
+        test_points = [
+            (-1000, 20),
+            (1, 2),
+            (1, 0),
+            (1, 3),
+            (1, 5),
+            (1, 42),
+            (42, 3.14159),
+        ]
+
+        uut = NearestNeighborIndex(test_points)
+
+        self.assertEqual((1, 3), uut.find_nearest((1, 3)))
